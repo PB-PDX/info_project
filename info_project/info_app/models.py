@@ -1,15 +1,34 @@
 from django.db import models
 from django.contrib.auth.models import User 
+from PIL import Image
+from django.urls import reverse
 
 
-class Profile(models.Model):
-    user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
-    bio = models.TextField()
+# class Profile(models.Model):
+#     user = models.OneToOneField(User, on_delete=models.CASCADE)
+#     image = models.ImageField(default='default.jpg', upload_to='profile_pics')
+
+#     def __str__(self):
+#         return f'{self.user.username} Profile'
+
+#     def save(self, *args, **kwargs):
+#         super().save(*args, **kwargs)
+
+#         img = Image.open(self.image.path)
+
+#         if img.height > 300 or img.width > 300:
+#             output_size = (300, 300)
+#             img.thumbnail(output_size)
+#             img.save(self.image.path)
+
+class FederalRegister(models.Model):
+    title = models.CharField(max_length=500)
+    description = models.TextField(max_length=500)
+    pubDate = models.DateTimeField()
+    link = models.CharField(max_length=500)
 
     def __str__(self):
-        return str(self.user)
+        return self.title
 
-class Api(models.Model):
-    title = models.CharField(max_length=70, blank=False, default='')
-    description = models.CharField(max_length=200,blank=False, default='')
-    published = models.BooleanField(default=False)
+    def get_absolute_url(self):
+        return reverse('federalregister-detail', kwargs={'pk': self.pk})

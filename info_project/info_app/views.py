@@ -1,6 +1,6 @@
 from django.shortcuts import redirect, render
 import requests
-from .models import Api, Profile
+from .models import FederalRegister
 from django.http.response import JsonResponse
 
 import xmltodict
