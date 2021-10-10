@@ -29,7 +29,7 @@ def addfeed(request, format=None):
             return Response (serializer.data, status=status.HTTP_201_CREATED)
         return Response (serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['GET', 'PUT', 'DELETE'])
+@api_view(['GET', 'PUT', 'DELETE',])
 def feed_detail(request, pk):
     try: 
         tutorial = Profile.objects.get(pk=pk) 
@@ -80,7 +80,7 @@ def federalregister(request):
            
             pubDate = Date1[3]+'-'+str(month_number)+'-'+Date1[1]
             # print(pubDate)
-            print(description)
+            # print(description)
             # pubDate = snip['pubDate'].split(",", 1)
             
             # date_time_str = x
