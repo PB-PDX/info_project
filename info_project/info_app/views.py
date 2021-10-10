@@ -13,7 +13,8 @@ from rest_framework import serializers, status
 from .serializers import ProfileSerializer
 from rest_framework.response import Response
 from django.http.response import JsonResponse
-from rest_framework.parsers import JSONParser 
+from rest_framework.parsers import JSONParser
+from rest_framework import generics 
 
 
 @api_view(["GET", "POST"])
@@ -55,6 +56,24 @@ def feed_detail(request, pk):
 def home(request):
     x = FederalRegister.objects.all()
     return render(request, 'info_app/home.html')
+
+
+
+
+
+
+class FRList(generics.ListCreateAPIView):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+
+
+class FRDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+
+
+
+
 
 
 def federalregister(request):

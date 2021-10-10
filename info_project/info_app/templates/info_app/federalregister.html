@@ -1,7 +1,7 @@
 {% extends "info_app/base.html" %}
 {% block content %}
-
 <button id='userSubscribe'>Subscribe</button>
+{% csrf_token %}
 
 {% for snip in page_obj %}
 <div class="list-group">
