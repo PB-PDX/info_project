@@ -4,45 +4,54 @@ axios.defaults.xsrfCookieName = 'csrftoken';
 axios.defaults.xsrfHeaderName = 'X-CSRFToken';
 
 
+let x = axios({
+    method: 'get',
+    url: "frapi/" + (user_id),
+    xstfCookieName: 'csrftoken',
+    xsrfHeaderName: 'X-CSRFToken',
+
+    headers: {
+        'X-CSRFToken': 'csrftoken',
+    }
+}).then(response => {
+    // console.log(response.data.feeds)
+    let x = response.data.feeds
+    console.log(x)
+    return x
+
+})
 
 
+console.log(x['PromiseResult'])
 const buttons = document.querySelectorAll('button');
 for (let i = 0; i < buttons.length; i++) {
-  buttons[i].addEventListener("click", function (event) {
-     let snipId = event.target.id
+    buttons[i].addEventListener("click", function (event) {
+        let snipId = event.target.id
 
-     axios({
-        method: 'get',
-        url: "frapi/"+(user_id),
-        xstfCookieName: 'csrftoken',
-        xsrfHeaderName: 'X-CSRFToken',
+
+
+        // feed += (snipId)   
         
-        headers: {
-            'X-CSRFToken': 'csrftoken',
-        }
-    }).then(response => console.log(response))
-        
-   
-     axios({
-        method: 'patch',
-        url: "frapi/"+(user_id),
-        xstfCookieName: 'csrftoken',
-        xsrfHeaderName: 'X-CSRFToken',
-        data: {
-            feeds: snipId
-        },
-        headers: {
-            'X-CSRFToken': 'csrftoken',
-        }
-    }).then(response => console.log(response))
-     
-  })
+        axios({
+            method: 'patch',
+            url: "frapi/" + (user_id),
+            xstfCookieName: 'csrftoken',
+            xsrfHeaderName: 'X-CSRFToken',
+            data: {
+                feeds: snipId
+            },
+            headers: {
+                'X-CSRFToken': 'csrftoken',
+            }
+        }).then(response => console.log(response))
+
+    })
 }
 
 function userSubscribe1() {
     axios({
         method: 'patch',
-        url: "frapi/"+(user_id),
+        url: "frapi/" + (user_id),
         xstfCookieName: 'csrftoken',
         xsrfHeaderName: 'X-CSRFToken',
         data: {
@@ -51,7 +60,8 @@ function userSubscribe1() {
         headers: {
             'X-CSRFToken': 'csrftoken',
         }
-    }).then(response => console.log(response))}
+    }).then(response => console.log(response))
+}
 
 
 
