@@ -83,10 +83,8 @@ def federalregister(request):
     json_data = json.dumps(dict_data, indent=3)
     x= json.loads(json_data)
     results = x['rss']['channel']['item']
-    count = 1
-    
-    if count <= 10:
-        for snip in results:
+    for snip in results:
+        try:
             title = snip['title']
             
             description = snip['description']
@@ -96,7 +94,7 @@ def federalregister(request):
             month_name = Date1[2]
             datetime_object = datetime.strptime(month_name, "%b")
             month_number = datetime_object.month
-           
+            
             pubDate = Date1[3]+'-'+str(month_number)+'-'+Date1[1]
             # print(pubDate)
             # print(description)
@@ -113,9 +111,10 @@ def federalregister(request):
                 pubDate=pubDate,
                 link=link,
             )
-            count += 1
             data.save()
-    
+        except:
+            print('unable to copy duplicate')
+    print(FederalRegister.objects.get(pk=4))
     contact_list = FederalRegister.objects.all()
     paginator = Paginator(contact_list, 10)
     page_number = request.GET.get('page')

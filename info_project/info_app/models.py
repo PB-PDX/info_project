@@ -22,7 +22,7 @@ from django.urls import reverse
 #             img.save(self.image.path)
 
 class FederalRegister(models.Model):
-    title = models.CharField(max_length=500, primary_key=True, unique=True)
+    title = models.CharField(max_length=500, unique=True)
     description = models.TextField(max_length=500, null=True)
     pubDate = models.DateField(null=True)
     link = models.CharField(max_length=500)
