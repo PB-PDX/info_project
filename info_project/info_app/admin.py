@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import FederalRegister
+from .models import Feeds, Snippets
 
 
-admin.site.register(FederalRegister)
+admin.site.register(Feeds)
+admin.site.register(Snippets)

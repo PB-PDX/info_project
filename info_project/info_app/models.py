@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User 
 from PIL import Image
 from django.urls import reverse
+from users.models import Profile
 
 
 # class Profile(models.Model):
@@ -21,14 +22,22 @@ from django.urls import reverse
 #             img.thumbnail(output_size)
 #             img.save(self.image.path)
 
-class FederalRegister(models.Model):
+class Feeds(models.Model):
     title = models.CharField(max_length=500, unique=True)
     description = models.TextField(max_length=500, null=True)
     pubDate = models.DateField(null=True)
     link = models.CharField(max_length=500)
+    subscriber = models.ManyToManyField(Profile)
+    feed = models.CharField(max_length=500)
 
     def __str__(self):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('federalregister-detail', kwargs={'pk': self.pk})
+        return reverse('federalregister', kwargs={'pk': self.pk})
+
+class Snippets(models.Model):
+    sniptitle = models.ForeignKey(Feeds, on_delete=models.CASCADE, null=True)
+    subscriber = models.ManyToManyField(Profile)
+    def __str__(self):
+        return self.sniptitle
