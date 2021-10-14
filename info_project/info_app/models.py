@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User 
 from PIL import Image
+from django.db.models.deletion import CASCADE
 from django.urls import reverse
 from users.models import Profile
 
@@ -35,9 +36,14 @@ class Feeds(models.Model):
 
     def get_absolute_url(self):
         return reverse('federalregister', kwargs={'pk': self.pk})
-
-class Snippets(models.Model):
-    sniptitle = models.ForeignKey(Feeds, on_delete=models.CASCADE, null=True)
-    subscriber = models.ManyToManyField(Profile)
+class FeedName(models.Model):
+    feed_name = models.CharField(max_length=500, unique=True, primary_key=True)
     def __str__(self):
-        return self.sniptitle
+        return self.feed_name
+
+class UserSubscriptions(models.Model):
+    user_id = models.CharField(max_length=500, primary_key=True)
+    AvailableFeeds = models.ManyToManyField(FeedName)
+    subscriber = models.ForeignKey(Profile, on_delete=CASCADE)
+    
+    

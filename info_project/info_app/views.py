@@ -1,7 +1,7 @@
 from django.shortcuts import redirect, render
 import json
 import requests
-from info_app.models import Feeds, Snippets
+from info_app.models import Feeds, UserSubscriptions, FeedName
 import xmltodict
 from django.core.paginator import Paginator
 from datetime import datetime
@@ -11,25 +11,25 @@ from users.models import Profile
 #-----------------------------------------------------
 from rest_framework.decorators import api_view
 from rest_framework import serializers, status
-from .serializers import FeedSerializer, SnipSerializer, ProfileSerializer
+from .serializers import FeedSerializer, UserSubscriptionsSerializer, ProfileSerializer, UserSubscriptionsSerializerList, FeedNameSerializer
 from rest_framework.response import Response
 from django.http.response import JsonResponse
 from rest_framework.parsers import JSONParser
 from rest_framework import generics 
 
 
-# @api_view(["GET", "POST"])
-# def addfeed(request, format=None):
-#     if request.method == 'GET':
-#         feed = Profile.objects.all()
-#         serializer = ProfileSerializer(feed, many=True)
-#         return Response (serializer.data)
-#     elif request.method == 'POST':
-#         serializer = ProfileSerializer(data=request.data)
-#         if serializer.is_valid():
-#             serializer.save()
-#             return Response (serializer.data, status=status.HTTP_201_CREATED)
-#         return Response (serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+@api_view(["GET", "POST"])
+def addfeed(request, format=None):
+    if request.method == 'GET':
+        feed = Profile.objects.all()
+        serializer = UserSubscriptionsSerializerList(feed, many=True)
+        return Response (serializer.data)
+    elif request.method == 'POST':
+        serializer = UserSubscriptionsSerializerList(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response (serializer.data, status=status.HTTP_201_CREATED)
+        return Response (serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # @api_view(['GET', 'PUT', 'DELETE',])
 # def feed_detail(request, pk):
@@ -68,10 +68,20 @@ class Subscribers(generics.RetrieveUpdateAPIView):
     queryset = Feeds.objects.all()
     serializer_class = FeedSerializer
 
+class UserSubscriptionsList(generics.CreateAPIView):
+    queryset = UserSubscriptions.objects.all()
+    serializer_class = UserSubscriptionsSerializerList
 
-class SnipSubscribe(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Snippets.objects.all()
-    serializer_class = SnipSerializer
+class UserSubscriptions(generics.RetrieveUpdateDestroyAPIView):
+    queryset = UserSubscriptions.objects.all()
+    serializer_class = UserSubscriptionsSerializer
+class FeedNameUpdate(generics.RetrieveUpdateDestroyAPIView):
+    queryset = FeedName.objects.all()
+    serializer_class = UserSubscriptionsSerializer
+
+class FeedNameList(generics.ListCreateAPIView):
+    queryset = FeedName.objects.all()
+    serializer_class = FeedNameSerializer
 
 
 class FRList(generics.ListCreateAPIView):
