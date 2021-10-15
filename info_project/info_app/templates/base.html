@@ -54,9 +54,9 @@
                     {% endif %}
 
                
-                <form class="d-flex">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
+                <form class="d-flex" action="{% url 'search_results' %}" method="get">
+                    <input class="form-control me-2" name="q" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success" id='search' type="submit">Search</button>
                 </form>
             </div>
         </div>
@@ -64,6 +64,7 @@
     
 
     {% block content %}{% endblock %}
+    <!-- allows for the user ID to be parsed by JS -->
     {{ request.user.id|json_script:"user_id" }}
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>

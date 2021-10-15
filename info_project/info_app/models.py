@@ -46,4 +46,7 @@ class UserSubscriptions(models.Model):
     AvailableFeeds = models.ManyToManyField(FeedName)
     subscriber = models.ForeignKey(Profile, on_delete=CASCADE)
     
+    def __str__(self):
+        return (f"user: {self.user_id}")
+    
     

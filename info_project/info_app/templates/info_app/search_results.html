@@ -1,11 +1,8 @@
 {% extends "base.html" %}
-{% block content %}
-<div class="container-fluid">
-  <button class='userSubscribe' >Subscribe</button>
-</div>
-{% csrf_token %}
 
-{% for snip in page_obj %}
+{% block content %}
+{% csrf_token %}
+{% for snip in snips %}
 
 <div class="list-group mx-2">
   <div class="row align-items-start">
@@ -61,6 +58,4 @@
     <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
     {% endif %}
 </div>
-
-
-{% endblock %}
+  {% endblock content %}

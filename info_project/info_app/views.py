@@ -6,30 +6,53 @@ import xmltodict
 from django.core.paginator import Paginator
 from datetime import datetime
 from django.utils import timezone
-
 from users.models import Profile
+from django.db.models import Q
+from django.views.generic import (
+    ListView,
+)
 #-----------------------------------------------------
 from rest_framework.decorators import api_view
 from rest_framework import serializers, status
-from .serializers import FeedSerializer, UserSubscriptionsSerializer, ProfileSerializer, UserSubscriptionsSerializerList, FeedNameSerializer
 from rest_framework.response import Response
 from django.http.response import JsonResponse
 from rest_framework.parsers import JSONParser
 from rest_framework import generics 
+from .serializers import (
+    FeedSerializer, 
+    UserSubscriptionsSerializer, 
+    ProfileSerializer,  
+    FeedNameSerializer
+    )
+
+class SearchResultsView(ListView):
+    paginate_by = 10
+    model = Feeds
+    template_name = 'info_app/search_results.html'
+    context_object_name = 'snips'
+
+    def get_queryset(self):  # new
+        query = self.request.GET.get('q')
+        object_list = Feeds.objects.filter(
+            Q(title__icontains=query) | Q(description__icontains=query) 
+        )
+        object_list = object_list.order_by('-pubDate')
+        return object_list
 
 
 @api_view(["GET", "POST"])
 def addfeed(request, format=None):
     if request.method == 'GET':
-        feed = Profile.objects.all()
-        serializer = UserSubscriptionsSerializerList(feed, many=True)
+        user_subscriptions = UserSubscriptions.objects.all()
+        serializer = UserSubscriptionsSerializer(user_subscriptions, many=True)
         return Response (serializer.data)
     elif request.method == 'POST':
-        serializer = UserSubscriptionsSerializerList(data=request.data)
+        serializer = UserSubscriptionsSerializer(data=request.data)
+        
         if serializer.is_valid():
             serializer.save()
             return Response (serializer.data, status=status.HTTP_201_CREATED)
-        return Response (serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response ("user exists")
 
 # @api_view(['GET', 'PUT', 'DELETE',])
 # def feed_detail(request, pk):
@@ -54,27 +77,27 @@ def addfeed(request, format=None):
 #         tutorial.delete() 
 #         return JsonResponse({'message': 'Tutorial was deleted successfully!'}, status=status.HTTP_204_NO_CONTENT)
 
+# Home page rendering 
 def home(request):
     x = Feeds.objects.all()
     return render(request, 'info_app/home.html')
 
-
+# Listview and create feeds
 class Subscribe(generics.ListCreateAPIView):
     queryset = Feeds.objects.all()
     serializer_class = FeedSerializer
-
 
 class Subscribers(generics.RetrieveUpdateAPIView):
     queryset = Feeds.objects.all()
     serializer_class = FeedSerializer
 
-class UserSubscriptionsList(generics.CreateAPIView):
-    queryset = UserSubscriptions.objects.all()
-    serializer_class = UserSubscriptionsSerializerList
 
+
+#update subscriptions for UserSubscriptions model.
 class UserSubscriptions(generics.RetrieveUpdateDestroyAPIView):
     queryset = UserSubscriptions.objects.all()
     serializer_class = UserSubscriptionsSerializer
+
 class FeedNameUpdate(generics.RetrieveUpdateDestroyAPIView):
     queryset = FeedName.objects.all()
     serializer_class = UserSubscriptionsSerializer
@@ -97,7 +120,7 @@ class FRDetail(generics.ListAPIView):
 
 
 
-
+#api to get xml data and convert it.
 def federalregister(request):
     data= requests.get('http://www.federalregister.gov/api/v1/documents.rss?&amp;conditions%5Bagency_ids%5D%5B%5D=466&amp;order=newest')
     response = data.text

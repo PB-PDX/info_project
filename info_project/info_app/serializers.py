@@ -12,10 +12,6 @@ class UserSubscriptionsSerializer(serializers.ModelSerializer):
         model = UserSubscriptions
         fields = ('__all__')
 
-class UserSubscriptionsSerializerList(serializers.ModelSerializer):
-    class Meta:
-        model = UserSubscriptions
-        fields = ('__all__')
 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
