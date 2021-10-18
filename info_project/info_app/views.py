@@ -1,5 +1,8 @@
 from django.shortcuts import redirect, render
 import json
+
+from requests.api import request
+
 import requests
 from info_app.models import Feeds, UserSubscriptions, FeedName
 import xmltodict
@@ -22,7 +25,8 @@ from .serializers import (
     FeedSerializer, 
     UserSubscriptionsSerializer, 
     ProfileSerializer,  
-    FeedNameSerializer
+    FeedNameSerializer, 
+    ProfileSnipListSerializer,
     )
 
 class SearchResultsView(ListView):
@@ -39,9 +43,37 @@ class SearchResultsView(ListView):
         object_list = object_list.order_by('-pubDate')
         return object_list
 
+from django.http import HttpResponse
+ 
+def test(request):
+    snips = Feeds.objects.filter(subscriber__id=1)
+    for snip in snips:
+        print(snip.pubDate)
+    print(snips)
+    return HttpResponse(request, "confirm")
+
+
+
+
+
+#Profile snippet listview
+@api_view(["GET", "PATCH"])
+def profilesniplist(request):  
+    if request.method == 'GET':
+        usersnips = Feeds.objects.filter(subscriber__id=1)
+
+        serializer = ProfileSnipListSerializer(usersnips, many=True)
+        
+        return Response (serializer.data)
+    elif request.method == 'PATCH':
+        serializer = UserSubscriptionsSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response (serializer.data, status=status.HTTP_201_CREATED)
+        return Response ("user exists")
 
 @api_view(["GET", "POST"])
-def addfeed(request, format=None):
+def addfeedsubs(request, format=None):
     if request.method == 'GET':
         user_subscriptions = UserSubscriptions.objects.all()
         serializer = UserSubscriptionsSerializer(user_subscriptions, many=True)
@@ -93,7 +125,7 @@ class Subscribers(generics.RetrieveUpdateAPIView):
 
 
 
-#update subscriptions for UserSubscriptions model.
+#Feed update subscriptions for UserSubscriptions model.
 class UserSubscriptions(generics.RetrieveUpdateDestroyAPIView):
     queryset = UserSubscriptions.objects.all()
     serializer_class = UserSubscriptionsSerializer
@@ -115,6 +147,9 @@ class FRList(generics.ListCreateAPIView):
 class FRDetail(generics.ListAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
+
+
+
 
 
 

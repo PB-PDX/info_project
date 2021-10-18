@@ -36,10 +36,13 @@ class Feeds(models.Model):
 
     def get_absolute_url(self):
         return reverse('federalregister', kwargs={'pk': self.pk})
+
+
 class FeedName(models.Model):
     feed_name = models.CharField(max_length=500, unique=True, primary_key=True)
     def __str__(self):
         return self.feed_name
+
 
 class UserSubscriptions(models.Model):
     user_id = models.CharField(max_length=500, primary_key=True)
@@ -47,6 +50,4 @@ class UserSubscriptions(models.Model):
     subscriber = models.ForeignKey(Profile, on_delete=CASCADE)
     
     def __str__(self):
-        return (f"user: {self.user_id}")
-    
-    
+        return (f"user: {self.user_id}")  

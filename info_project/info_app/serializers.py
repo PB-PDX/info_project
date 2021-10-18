@@ -22,3 +22,13 @@ class FeedNameSerializer(serializers.ModelSerializer):
     class Meta:
         model = FeedName
         fields = ('__all__')
+
+        
+
+class ProfileSnipListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Feeds
+        fields = ('__all__')
+              
+            
+    

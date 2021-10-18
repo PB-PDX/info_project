@@ -1,4 +1,4 @@
-{% extends "info_app/base.html" %}
+{% extends "base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
 <div class="content-section w-100 p-3">
@@ -14,12 +14,81 @@
     <fieldset class="form-group">
       <legend class="border-bottom mb-4">Profile Info</legend>
 
-              {{ u_form|crispy }}
-              {{ p_form|crispy }}
-          </fieldset>
-          <div class="form-group">
-              <button class="btn btn-outline-info" type="submit">Update</button>
-          </div>
-      </form>
+      {{ u_form|crispy }}
+      {{ p_form|crispy }}
+    </fieldset>
+    <div class="form-group">
+      <button class="btn btn-outline-info" type="submit">Update</button>
     </div>
+  </form>
+</div>
+
+<div onload='popSnips()'></div>
+
+<div class="container-fluid">
+  <div class="list-group mx-2">
+    <div class="row align-items-start">
+      <ul class="list-group" id="submittedtasks"></ul>
+    </div>
+  </div>
+</div>
+
+{% for snip in onload %}
+
+<div class="list-group mx-2">
+  <div class="row align-items-start">
+    <a href="{{ snip.link }}" class="list-group-item list-group-item-action" aria-current="true">
+      <div class="d-flex w-100 justify-content-between">
+        <h5 class="mb-1">{{ snip.title }}</h5>
+      </div>
+      <p class="mb-1">Published on: <bold>{{ snip.pubDate }}</bold>
+      </p>
+      <small>Description: <bold>{{ snip.description }}</bold></small>
+    </a>
+    {% if user.is_authenticated %}
+
+    <div class="row align-top">
+      <div class="col-4">
+        <button class='snipButton btn btn-primary' name="{{ snip.id }}">Add Snippet</button>
+
+      </div>
+    </div>
+
+    {% else %}
+
+    <div class="row align-top">
+      <div class="col-4">
+        <button class='buttons' name="{{ snip.id }}" data-bs-toggle="tooltip" data-bs-placement="top"
+          title="Sign in to add to your account!" disabled>Add Snippet</button>
+      </div>
+    </div>
+
+    {% endif %}
+
+  </div>
+</div>
+
+<br>
+{% endfor %}
+
+<div class='d-flex justify-content-center'>
+  {% if page_obj.has_previous %}
+  <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
+  <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+  {% endif %}
+
+  {% for num in page_obj.paginator.page_range %}
+  {% if page_obj.number == num %}
+  <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
+  {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %} <a class="btn btn-outline-info mb-4"
+    href="?page={{ num }}">{{ num }}</a>
+    {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+    <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
+    <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+    {% endif %}
+</div>
+
 {% endblock content %}

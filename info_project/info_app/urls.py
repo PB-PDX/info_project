@@ -4,7 +4,9 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from .views import (
     home, 
     federalregister,
-    addfeed, 
+    addfeedsubs,
+    profilesniplist,
+    test, 
     FRList, 
     FRDetail, 
     Subscribe, 
@@ -12,21 +14,24 @@ from .views import (
     Subscribers,  
     FeedNameList, 
     FeedNameUpdate,
-    SearchResultsView 
+    SearchResultsView, 
 )
 
 urlpatterns = [
     #home path
     path('', home, name='home'),
 
-    #POST a new user subscription or return a 404 to initiate an update.
-    path('create/subscriptions', addfeed, name='createsubscriptions'),
+    #User snippet subscription
+    path('profile/profilesniplist/', profilesniplist, name='profilesniplist'),
 
-    #user subscription updates
-    path('usersubscriptions/<int:pk>', UserSubscriptions.as_view()),
+    #Feed: post a new Feed user subscription or return a 404 to initiate an update.
+    path('create/subscriptions', addfeedsubs, name='createsubscriptions'),
+
+    #Feed user subscription updates
+    path('feedsubs/<int:pk>', UserSubscriptions.as_view()),
     
-    
-    path('subscribers/<int:pk>', Subscribers.as_view()),
+    #Snippet subscription
+    path('snipsubs/<int:pk>', Subscribers.as_view()),
 
     #list of all the feeds and details
     path('feed/list/', Subscribe.as_view()),
@@ -37,12 +42,14 @@ urlpatterns = [
     #Profile views
     path('frapi/', FRList.as_view()),
     path('frapi/<int:pk>', FRDetail.as_view()),
+
+    path('test/', test),
     
 
 
     path('feedlist', FeedNameList.as_view()),
     path('feedlistupdate', FeedNameUpdate.as_view()),
 
-    path('search/', SearchResultsView.as_view(), name='search_results'),
+    path('', SearchResultsView.as_view(), name='search_results'),
     
 ]

@@ -4,7 +4,7 @@ axios.defaults.xsrfHeaderName = 'X-CSRFToken';
 
 // This for loop listens to all the buttons on the page for a click 
 // with the class of snipButton and then a variable is set to the buttons 
-// 'name', which is the snippets pk. The subscribers will then be stored on
+// 'name', which is the snippets pk. The user will then be stored on
 // the respective snippet. This also allows for the toggle of Add Snippet and 
 // Added. 
 
@@ -25,7 +25,7 @@ for (let i = 0; i < snipButton.length; i++) {
                 try {
                     let res = await axios({
                         method: 'get',
-                        url: "subscribers/" + (snipId),
+                        url: "snipsubs/" + (snipId),
                         xstfCookieName: 'csrftoken',
                         xsrfHeaderName: 'X-CSRFToken',
                         headers: {
@@ -33,7 +33,7 @@ for (let i = 0; i < snipButton.length; i++) {
                         }
                     })
                     if (res.status == 200) {
-                        // console.log(res.status)
+                        console.log(res.status)
                     }
                     return res.data.subscriber
                 }
@@ -53,7 +53,7 @@ for (let i = 0; i < snipButton.length; i++) {
                     // This axios patch request allows for the manipulation of one field only.    
                     axios({
                         method: 'patch',
-                        url: "subscribers/" + (snipId),
+                        url: "snipsubs/" + (snipId),
                         xstfCookieName: 'csrftoken',
                         xsrfHeaderName: 'X-CSRFToken',
                         data: {
@@ -71,7 +71,7 @@ for (let i = 0; i < snipButton.length; i++) {
             event.target.innerText = 'Add Snippet'
             axios({
                 method: 'get',
-                url: "subscribers/" + (snipId),
+                url: "snipsubs/" + (snipId),
                 xstfCookieName: 'csrftoken',
                 xsrfHeaderName: 'X-CSRFToken',
                 headers: {
@@ -84,9 +84,12 @@ for (let i = 0; i < snipButton.length; i++) {
                 const index = subs.indexOf(user_id)
                 if (index > -1) {
                     subs.splice(index, 1);
+                
                   }
+                  console.log('test')
                }
-               console.log(subs)
+               
+               
                 
             })
 
@@ -96,23 +99,12 @@ for (let i = 0; i < snipButton.length; i++) {
 
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
 // This will listen for the userSubscribe button. It will send a post request and if a 404 is returned then an update will be attempted.
 const button1 = document.querySelectorAll('.userSubscribe');
 for (let i = 0; i < button1.length; i++) {
     button1[i].addEventListener("click", function (event) {
-        console.log("button test")
+        let currentFeed = event.target.name
+        
         axios({
             method: 'POST',
             url: "create/subscriptions",
@@ -121,7 +113,7 @@ for (let i = 0; i < button1.length; i++) {
             data: {
                 "user_id": user_id,
                 "subscriber": user_id,
-                "AvailableFeeds": ["federal register"]
+                "AvailableFeeds": currentFeed
             },
             headers: {
                 'X-CSRFToken': 'csrftoken',
@@ -130,7 +122,7 @@ for (let i = 0; i < button1.length; i++) {
             if (response.data == "user exists") {
                 axios({
                     method: 'get',
-                    url: "usersubscriptions/" + (user_id),
+                    url: "feedsubs/" + (user_id),
                     xstfCookieName: 'csrftoken',
                     xsrfHeaderName: 'X-CSRFToken',
                     headers: {
@@ -139,15 +131,15 @@ for (let i = 0; i < button1.length; i++) {
                 }).then(response => {
                     let subsUpdate = []
                     let subs = response.data.AvailableFeeds
-                    let currentSub = "test test"
+                    let currentSub = currentFeed
                     subsUpdate.push(currentSub)
                     for (i = 0; i < subs.length; i++) {
                         subsUpdate.push(subs[i])
                     }
-                    console.log(subsUpdate)
+                   
                     axios({
                         method: 'patch',
-                        url: "usersubscriptions/" + (user_id),
+                        url: "feedsubs/" + (user_id),
                         xstfCookieName: 'csrftoken',
                         xsrfHeaderName: 'X-CSRFToken',
                         data: {
