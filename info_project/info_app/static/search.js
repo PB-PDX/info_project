@@ -80,7 +80,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
                 let classes = event.target.classList
                 let result = classes.toggle("btn-success");
                 if (result) {
-                    snipButton.textContent = `'btn-success' removed; classList is now "${classes}".`;
+                    btnSnip.textContent = `'btn-success' removed; classList is now "${classes}".`;
                     event.target.innerText = 'Added'
 
                     let snipId = event.target.name
@@ -117,7 +117,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
                     })
                 }
                 else {
-                    snipButton.textContent = `'btn-success' added; classList is now "${classes}".`;
+                    btnSnip.textContent = `'btn-success' added; classList is now "${classes}".`;
                     event.target.innerText = 'Add Snippet'
                     console.log('remove subs')
 

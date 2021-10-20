@@ -29,12 +29,15 @@ from .serializers import (
     ProfileSnipListSerializer,
     )
 
-class SearchResultsView(ListView):
-    
-    model = Feeds
-    template_name = 'info_app/search_results.html'
-    
+# Home page rendering 
+def home(request):
+    x = Feeds.objects.all()
+    return render(request, 'info_app/home.html')
 
+class SearchResultsView(ListView):
+    model = Feeds
+    queryset = Feeds.objects.order_by('-pubDate')
+    template_name = 'info_app/search_results.html'
     
 
 class Search(generics.ListCreateAPIView):
@@ -58,25 +61,13 @@ def test(request):
     print(snips)
     return HttpResponse(request, "confirm")
 
-
-
-
-
 #Profile snippet listview
 @api_view(["GET", "PATCH"])
 def profilesniplist(request, pk): 
-    
     if request.method == 'GET':
         usersnips = Feeds.objects.filter(subscriber__id=pk)
         serializer = ProfileSnipListSerializer(usersnips, many=True)      
         return Response (serializer.data)
-
-    # elif request.method == 'PATCH':
-    #     serializer = UserSubscriptionsSerializer(data=request.data)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         return Response (serializer.data, status=status.HTTP_201_CREATED)
-    #     return Response ("user exists")
 
 
 @api_view(["GET", "POST"])
@@ -93,41 +84,14 @@ def addfeedsubs(request, format=None):
             return Response (serializer.data, status=status.HTTP_201_CREATED)
         return Response ("user exists")
 
-# @api_view(['GET', 'PUT', 'DELETE',])
-# def feed_detail(request, pk):
-#     try: 
-#         tutorial = Profile.objects.get(pk=pk) 
-#     except Profile.DoesNotExist: 
-#         return JsonResponse({'message': 'The tutorial does not exist'}, status=status.HTTP_404_NOT_FOUND) 
- 
-#     if request.method == 'GET': 
-#         tutorial_serializer = ProfileSerializer(tutorial) 
-#         return JsonResponse(tutorial_serializer.data) 
- 
-#     elif request.method == 'PUT': 
-#         tutorial_data = JSONParser().parse(request) 
-#         tutorial_serializer = ProfileSerializer(tutorial, data=tutorial_data) 
-#         if tutorial_serializer.is_valid(): 
-#             tutorial_serializer.save() 
-#             return JsonResponse(tutorial_serializer.data) 
-#         return JsonResponse(tutorial_serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
- 
-#     elif request.method == 'DELETE': 
-#         tutorial.delete() 
-#         return JsonResponse({'message': 'Tutorial was deleted successfully!'}, status=status.HTTP_204_NO_CONTENT)
-
-# Home page rendering 
-def home(request):
-    x = Feeds.objects.all()
-    return render(request, 'info_app/home.html')
 
 # Listview and create feeds
 class Subscribe(generics.ListCreateAPIView):
-    queryset = Feeds.objects.all()
+    queryset = Feeds.objects.order_by('-pubDate')
     serializer_class = FeedSerializer
 
 class Subscribers(generics.RetrieveUpdateAPIView):
-    queryset = Feeds.objects.all()
+    queryset = Feeds.objects.order_by('-pubDate')
     serializer_class = FeedSerializer
 
 
@@ -164,11 +128,6 @@ class FRDetail(generics.ListAPIView):
 
 
 
-
-
-
-
-
 #api to get xml data and convert it.
 def federalregister(request):
     data= requests.get('http://www.federalregister.gov/api/v1/documents.rss?&amp;conditions%5Bagency_ids%5D%5B%5D=466&amp;order=newest')
@@ -177,21 +136,16 @@ def federalregister(request):
     json_data = json.dumps(dict_data, indent=3)
     x= json.loads(json_data)
     results = x['rss']['channel']['item']
-    
     for snip in results:
         try:
-            title = snip['title']
-            
+            title = snip['title']   
             description = snip['description']
             Date = snip['pubDate'].split(',')[1]
             Date1 = Date.split(' ')
-            
             month_name = Date1[2]
             datetime_object = datetime.strptime(month_name, "%b")
             month_number = datetime_object.month
-            
             pubDate = Date1[3]+'-'+str(month_number)+'-'+Date1[1]
-         
             link = snip['link']
             data = Feeds(
                 title=title,

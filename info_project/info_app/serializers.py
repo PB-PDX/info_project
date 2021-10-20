@@ -7,8 +7,8 @@ class FeedSerializer(serializers.ModelSerializer):
         model = Feeds
         fields = ('__all__')
 
-class UserSubscriptionsSerializer(serializers.ModelSerializer):
-    
+
+class UserSubscriptionsSerializer(serializers.ModelSerializer): 
     class Meta:
         model = UserSubscriptions
         fields = ('__all__')
@@ -19,11 +19,11 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = Profile
         fields = ('__all__')
 
+
 class FeedNameSerializer(serializers.ModelSerializer):
     class Meta:
         model = FeedName
         fields = ('__all__')
-
         
 
 class ProfileSnipListSerializer(serializers.ModelSerializer):

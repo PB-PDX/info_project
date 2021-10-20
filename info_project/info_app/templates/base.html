@@ -12,10 +12,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-uWxY/CJNBR+1zjPWmfnSnVxwRheevXITnMqoEIeG1LJrdI0GlVs/9cVSyPYXdcSF" crossorigin="anonymous">
     <link rel=”stylesheet” href=”https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css”>
+    
+    <link rel="stylesheet" href="{% static 'style.css' %}">
     {% if title %}
-    <title>Django Blog - {{ title }}</title>
+    <title>Info App - {{ title }}</title>
     {% else %}
-    <title>Django Blog</title>
+    <title>InfoApp</title>
     {% endif %}
 </head>
 <body>
@@ -32,7 +34,8 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="{% url 'federalregister' %}">something</a>
+                        <a class="nav-link active" aria-current="page" href="{% url 'federalregister' %}">SEC Feed</a>
+                        
                     </li>
                 </ul>
                     {% if user.is_authenticated %}
