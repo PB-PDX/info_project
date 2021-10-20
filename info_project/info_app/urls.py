@@ -6,7 +6,8 @@ from .views import (
     federalregister,
     addfeedsubs,
     profilesniplist,
-    test, 
+    test,
+    bls_surveys, 
     FRList, 
     FRDetail, 
     Subscribe, 
@@ -46,6 +47,8 @@ urlpatterns = [
     
     #api to get data for the federal register, filtered for SEC
     path('federalregister', federalregister, name='federalregister'),
+    path('bls/surveys', bls_surveys, name='bls_surveys'),
+    
     
     #Profile views
     path('frapi/', FRList.as_view()),

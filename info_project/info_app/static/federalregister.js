@@ -13,37 +13,37 @@ window.addEventListener('DOMContentLoaded', (event) => {
         }
     }).then(response => {
         console.log(response)
-        const deleteBtn = document.getElementById('fedReg')
+        const fedReg = document.getElementById('fedReg')
         for (i = 0; i < response.data.length; i++) {
             if (response.data[i].subscriber.includes(user_id)) {
                 console.log(response.data[i].id, 'subscribed')
                 const div = document.createElement("div");
                 div.innerHTML =
-                    `
-                <div class='list-group mx-2'> 
-                    <div class='row align-items-start'> 
-                        <a href = ${response.data[i].link} class='list-group-item list-group-item-action'> 
-                            <div class = "d-flex w-100 justify-content-between">
-                                <h5>${response.data[i].title}</h5> 
-                            </div>
-                            <p class='mb-1'>Published on: <bold> ${response.data[i].pubDate} </bold></p>
-                            <small>Description:  <bold> ${response.data[i].description} </bold></small>
-                        </a>
-                        <div class="row align-top">
-                            <div class="col-4">
-                                <button class='btnSnip btn btn-primary row align-top btn-success' name= ${response.data[i].id} >Added</button>
+                    `<div class='list-group mx-2'> 
+                        <div class='row align-items-start'> 
+                            <a href = ${response.data[i].link} class='list-group-item list-group-item-action'> 
+                                <div class = "d-flex w-100 justify-content-between">
+                                    <h5>${response.data[i].title}</h5> 
+                                </div>
+                                <p class='mb-1'>Published on: <bold> ${response.data[i].pubDate} </bold></p>
+                                <small>Description:  <bold> ${response.data[i].description} </bold></small>
+                            </a>
+                            <div class="row align-top">
+                                <div class="col-4">
+                                    <button class='btnSnip btn btn-primary row align-top btn-success' name= ${response.data[i].id} >Added</button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </br>`
+                </br>`
                 div.id = response.data[i].id
-                deleteBtn.append(div)
+                fedReg.append(div)
             }
             else {
+                
                 const div = document.createElement("div");
                 div.innerHTML =
-                `<div class='list-group mx-2'> 
+                    `<div class='list-group mx-2'> 
                     <div class='row align-items-start'> 
                         <a href = ${response.data[i].link} class='list-group-item list-group-item-action'> 
                             <div class = "d-flex w-100 justify-content-between">
@@ -61,7 +61,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
                 </div>
             </br>`
                 div.id = response.data[i].id
-                deleteBtn.append(div)
+                fedReg.append(div)
             }
         }
         const btnSnip = document.querySelectorAll('.btnSnip');
@@ -85,7 +85,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
                     }).then(response => {
                         let snipId = response.data.id
                         let subs = response.data.subscriber
-                        
+
                         if (subs.includes(user_id) == true) {
                             alert('already added this snippet')
                         }
@@ -148,14 +148,11 @@ window.addEventListener('DOMContentLoaded', (event) => {
 });
 
 
-
-
 // This will listen for the userSubscribe button. It will send a post request and if a 404 is returned then an update will be attempted.
 const button1 = document.querySelectorAll('.userSubscribe');
 for (let i = 0; i < button1.length; i++) {
     button1[i].addEventListener("click", function (event) {
         let currentFeed = event.target.name
-
         axios({
             method: 'POST',
             url: "create/subscriptions",
@@ -187,7 +184,6 @@ for (let i = 0; i < button1.length; i++) {
                     for (i = 0; i < subs.length; i++) {
                         subsUpdate.push(subs[i])
                     }
-
                     axios({
                         method: 'patch',
                         url: "feedsubs/" + (user_id),
@@ -204,7 +200,6 @@ for (let i = 0; i < button1.length; i++) {
                 })
             }
         })
-
     })
 }
 

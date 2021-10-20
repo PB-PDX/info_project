@@ -10,7 +10,7 @@ class Feeds(models.Model):
     description = models.TextField(max_length=500, null=True, blank=True)
     pubDate = models.DateField(null=True)
     link = models.CharField(max_length=500)
-    subscriber = models.ManyToManyField(Profile, null=True, blank=True)
+    subscriber = models.ManyToManyField(Profile, blank=True)
     feed = models.CharField(max_length=500)
 
     def __str__(self):

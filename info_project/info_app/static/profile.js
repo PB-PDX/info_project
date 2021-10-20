@@ -91,20 +91,14 @@ window.addEventListener('DOMContentLoaded', (event) => {
     }).then(response => {
         console.log(response)
         let feedSubs = document.getElementById('feedSubscriptions')
-
         for (i = 0; i < response.data.AvailableFeeds.length; i++) {
-
-
-
             const div = document.createElement("div");
             div.innerHTML =
-
                 `<div class='list-group mx-2'> 
                 <div class='row align-items-start'> 
                         <div class = "d-flex w-100 justify-content-between">
                             <h5>${response.data.AvailableFeeds[i]}</h5> 
-                        </div>
-                       
+                        </div> 
                     </a>
                     <div class="row align-top">
                         <div class="col-4">
@@ -120,8 +114,6 @@ window.addEventListener('DOMContentLoaded', (event) => {
         const feedSnip = document.getElementsByClassName('feedSnip')
         for (i = 0; i < feedSnip.length; i++) {
             feedSnip[i].addEventListener('click', function (event) {
-
-
                 axios({
                     method: 'get',
                     url: "feedsubs/" + (user_id),
@@ -138,7 +130,6 @@ window.addEventListener('DOMContentLoaded', (event) => {
                         console.log(subs)
                         if (index > -1) {
                             subs.splice(index, 1);
-                            
                             axios({
                                 method: 'patch',
                                 url: "feedsubs/" + (user_id),
