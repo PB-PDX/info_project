@@ -14,7 +14,9 @@ from .views import (
     Subscribers,  
     FeedNameList, 
     FeedNameUpdate,
-    SearchResultsView, 
+    SearchResultsView,
+    SubscribersUpdate,
+    Search, 
 )
 
 urlpatterns = [
@@ -22,7 +24,8 @@ urlpatterns = [
     path('', home, name='home'),
 
     #User snippet subscription
-    path('profile/profilesniplist/', profilesniplist, name='profilesniplist'),
+    path('profile/profilesniplist/<int:pk>', profilesniplist, name='profilesniplist'),
+    path('profilesniplist/<int:pk>', profilesniplist, name='profilesniplist'),
 
     #Feed: post a new Feed user subscription or return a 404 to initiate an update.
     path('create/subscriptions', addfeedsubs, name='createsubscriptions'),
@@ -31,10 +34,13 @@ urlpatterns = [
     path('feedsubs/<int:pk>', UserSubscriptions.as_view()),
     
     #Snippet subscription
-    path('snipsubs/<int:pk>', Subscribers.as_view()),
+    path('snipsubs/<int:pk>', Subscribers.as_view(), name='snipsubs'),
+    path('search/snipsubs/<int:pk>', Subscribers.as_view(), name='snipsubs'),
+    path('profile/snipsubs/<int:pk>', Subscribers.as_view()),
+    path('profile/update/<int:pk>', SubscribersUpdate.as_view()),
 
     #list of all the feeds and details
-    path('feed/list/', Subscribe.as_view()),
+    path('feed/all/', Subscribe.as_view()),
     
     #api to get data for the federal register, filtered for SEC
     path('federalregister', federalregister, name='federalregister'),
@@ -46,10 +52,12 @@ urlpatterns = [
     path('test/', test),
     
 
-
+    #Feed Lists that exist
     path('feedlist', FeedNameList.as_view()),
     path('feedlistupdate', FeedNameUpdate.as_view()),
 
-    path('', SearchResultsView.as_view(), name='search_results'),
+    #search
+    path('search/api/', Search.as_view(), name='search_api'),
+    path('search/', SearchResultsView.as_view(), name='search_results'),
     
 ]

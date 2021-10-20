@@ -12,6 +12,7 @@ const snipButton = document.querySelectorAll('.snipButton');
 for (let i = 0; i < snipButton.length; i++) {
     snipButton[i].addEventListener("click", function (event) {
         let classes = event.target.classList
+        console.log(classes)
         let result = classes.toggle("btn-success");
         let snipId = event.target.name
         if (result) {
@@ -80,13 +81,27 @@ for (let i = 0; i < snipButton.length; i++) {
             }).then(response => {
                 let checkId = user_id
                 let subs = response.data.subscriber
-               if (subs.includes(checkId)==true){
-                const index = subs.indexOf(user_id)
-                if (index > -1) {
-                    subs.splice(index, 1);
-                
-                  }
-                  console.log('test')
+                if (subs.includes(checkId)==true){
+                    const index = subs.indexOf(user_id)
+                    if (index > -1) {
+                        subs.splice(index, 1);  
+                    }
+                    console.log(subs)
+                    axios({
+                        method: 'patch',
+                        url: "snipsubs/" + (snipId),
+                        xstfCookieName: 'csrftoken',
+                        xsrfHeaderName: 'X-CSRFToken',
+                        data: {
+                                'subscriber': subs
+                        },
+                        headers: {
+                            'X-CSRFToken': 'csrftoken',
+                        }
+                    }).then(response => {
+                        console.log(response)
+                    })
+                  
                }
                
                

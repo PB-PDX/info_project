@@ -30,12 +30,18 @@ from .serializers import (
     )
 
 class SearchResultsView(ListView):
-    paginate_by = 10
+    
     model = Feeds
     template_name = 'info_app/search_results.html'
-    context_object_name = 'snips'
+    
 
-    def get_queryset(self):  # new
+    
+
+class Search(generics.ListCreateAPIView):
+    queryset = Feeds.objects.all()
+    serializer_class = FeedSerializer
+
+    def get_queryset(self):  
         query = self.request.GET.get('q')
         object_list = Feeds.objects.filter(
             Q(title__icontains=query) | Q(description__icontains=query) 
@@ -58,29 +64,30 @@ def test(request):
 
 #Profile snippet listview
 @api_view(["GET", "PATCH"])
-def profilesniplist(request):  
+def profilesniplist(request, pk): 
+    
     if request.method == 'GET':
-        usersnips = Feeds.objects.filter(subscriber__id=1)
-
-        serializer = ProfileSnipListSerializer(usersnips, many=True)
-        
+        usersnips = Feeds.objects.filter(subscriber__id=pk)
+        serializer = ProfileSnipListSerializer(usersnips, many=True)      
         return Response (serializer.data)
-    elif request.method == 'PATCH':
-        serializer = UserSubscriptionsSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response (serializer.data, status=status.HTTP_201_CREATED)
-        return Response ("user exists")
+
+    # elif request.method == 'PATCH':
+    #     serializer = UserSubscriptionsSerializer(data=request.data)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response (serializer.data, status=status.HTTP_201_CREATED)
+    #     return Response ("user exists")
+
 
 @api_view(["GET", "POST"])
 def addfeedsubs(request, format=None):
     if request.method == 'GET':
         user_subscriptions = UserSubscriptions.objects.all()
-        serializer = UserSubscriptionsSerializer(user_subscriptions, many=True)
+        serializer = UserSubscriptionsSerializer(user_subscriptions, many=True, partial=True)
         return Response (serializer.data)
+
     elif request.method == 'POST':
-        serializer = UserSubscriptionsSerializer(data=request.data)
-        
+        serializer = UserSubscriptionsSerializer(data=request.data)      
         if serializer.is_valid():
             serializer.save()
             return Response (serializer.data, status=status.HTTP_201_CREATED)
@@ -124,11 +131,18 @@ class Subscribers(generics.RetrieveUpdateAPIView):
     serializer_class = FeedSerializer
 
 
+class SubscribersUpdate(generics.RetrieveUpdateAPIView):
+    queryset = Feeds.objects.all()
+    serializer_class = FeedSerializer
+
+
 
 #Feed update subscriptions for UserSubscriptions model.
 class UserSubscriptions(generics.RetrieveUpdateDestroyAPIView):
     queryset = UserSubscriptions.objects.all()
     serializer_class = UserSubscriptionsSerializer
+
+    
 
 class FeedNameUpdate(generics.RetrieveUpdateDestroyAPIView):
     queryset = FeedName.objects.all()

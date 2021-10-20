@@ -1,44 +1,104 @@
 axios.defaults.xsrfCookieName = 'csrftoken';
 axios.defaults.xsrfHeaderName = 'X-CSRFToken';
-let ul = document.getElementById("submittedtasks");
-
-
-popSnips()
-
-
-
-
-
 
 
 
 
 
 function popSnips() {
+
     axios({
         method: 'get',
-        url: "profilesniplist/",
+        url: "profilesniplist/" + (user_id),
         xstfCookieName: 'csrftoken',
         xsrfHeaderName: 'X-CSRFToken',
         headers: {
             'X-CSRFToken': 'csrftoken',
         }
     }).then(response => {
+        console.log(response.data)
         const subSnip = document.getElementById("submittedtasks")
         for (i = 0; i < response.data.length; i++) {
-            const a = document.createElement("a");
-            const h5 = document.createElement("h5");
             const div = document.createElement("div");
-            h5.innerHTML =
-                "<div></h5>" +
-                response.data[i].title +
-                "</h5></div>";
-            a.href = response.data[i].link
-            a.className = "list-group-item list-group-item-action"
-            div.className = "d-flex w-100 justify-content-between"
-            div.appendChild(h5)
-            a.appendChild(div)
-            subSnip.appendChild(a);
+            const button = document.createElement("button")
+
+
+            div.innerHTML =
+            `
+                <div class='list-group mx-2'> 
+                    <div class='row align-items-start'> 
+                        <a href = ${response.data[i].link} class='list-group-item list-group-item-action'> 
+                            <div class = "d-flex w-100 justify-content-between">
+                                <h5>${response.data[i].title}</h5> 
+                            </div>
+                            <p class='mb-1'>Published on: <bold> ${response.data[i].pubDate} </bold></p>
+                            <small>Description:  <bold> ${response.data[i].description} </bold></small>
+                        </a>
+                        <div class="row align-top">
+                            <div class="col-4">
+                                <button class='profileSnip btn btn-danger row align-top' name= ${response.data[i].id} >Remove Snippet</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </br>`
+
+            div.id = response.data[i].id
+            subSnip.append(div);
         }
+        const profileSnip = document.querySelectorAll('.profileSnip')
+        for (let i = 0; i < profileSnip.length; i++) {
+            profileSnip[i].addEventListener("click", function (event) {
+
+                let snipId = event.target.name
+
+                axios({
+                    method: 'get',
+                    url: "snipsubs/" + (snipId),
+                    xstfCookieName: 'csrftoken',
+                    xsrfHeaderName: 'X-CSRFToken',
+                    headers: {
+                        'X-CSRFToken': 'csrftoken',
+                    }
+                }).then(response => {
+                    console.log(response)
+                    let snipId = response.data.id
+                    let subs = response.data.subscriber
+
+                    if (subs.includes(user_id) == true) {
+                        const index = subs.indexOf(user_id)
+                        if (index > -1) {
+                            subs.splice(index, 1);
+
+                        }
+
+                    }
+                    
+                    axios({
+                        method: 'patch',
+                        url: "snipsubs/" + (snipId),
+                        xstfCookieName: 'csrftoken',
+                        xsrfHeaderName: 'X-CSRFToken',
+                        data: {
+                            "subscriber": subs
+                        },
+                        headers: {
+                            'X-CSRFToken': 'csrftoken',
+                        }
+                    })
+                    
+                    let parent = document.getElementById(event.target.name)
+                   
+                    parent.remove()
+           
+
+                })
+            })
+        }
+
     })
 }
+
+
+
+

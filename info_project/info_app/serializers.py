@@ -8,6 +8,7 @@ class FeedSerializer(serializers.ModelSerializer):
         fields = ('__all__')
 
 class UserSubscriptionsSerializer(serializers.ModelSerializer):
+    
     class Meta:
         model = UserSubscriptions
         fields = ('__all__')
